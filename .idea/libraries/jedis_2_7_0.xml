@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="jedis-2.7.0">
+    <CLASSES>
+      <root url="file://$USER_HOME$/Desktop/JavaWeb武器库/jedis/jedis" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$USER_HOME$/Desktop/JavaWeb武器库/jedis/jedis" recursive="false" />
+  </library>
+</component>
