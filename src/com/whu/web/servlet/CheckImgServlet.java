@@ -38,7 +38,6 @@ public class CheckImgServlet extends HttpServlet {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(path), "utf-8"));
             String line;
             while ((line = reader.readLine()) != null) {
-                System.out.println(line);
                 words.add(line);
             }
             reader.close();
