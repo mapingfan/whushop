@@ -67,6 +67,9 @@ public class ProductInfoServlet extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        response.setHeader("Cache-Control","no-store");
+        response.setDateHeader("Expires", 0);
+        response.setHeader("Pragma","no-cache");
         request.setAttribute("product", product);
         request.getRequestDispatcher(request.getContextPath() + "/product_info.jsp").forward(request, response);
 
