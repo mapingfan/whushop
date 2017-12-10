@@ -2,7 +2,9 @@ package com.whu.service;
 
 import com.whu.dao.ProductDao;
 import com.whu.domain.Category;
+import com.whu.domain.Order;
 import com.whu.domain.Product;
+import com.whu.utils.DataSourceUtils;
 import com.whu.vo.Page;
 
 import java.sql.SQLException;
@@ -43,5 +45,29 @@ public class ProductService {
         ProductDao dao = new ProductDao();
         Product product = dao.findProductByPid(pid);
         return product;
+    }
+
+    public void submitOrder(Order order) {
+        ProductDao dao = new ProductDao();
+        try {
+            DataSourceUtils.startTransaction();
+            dao.addOrders(order);
+            dao.addOrderItem(order);
+        } catch (SQLException e) {
+            try {
+                DataSourceUtils.rollback();
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+            e.printStackTrace();
+        } finally {
+            try {
+                DataSourceUtils.commitAndRelease();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        }
+
     }
 }

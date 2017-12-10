@@ -3,6 +3,8 @@ package com.whu.dao;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.whu.domain.Category;
+import com.whu.domain.Order;
+import com.whu.domain.OrderItem;
 import com.whu.domain.Product;
 import com.whu.utils.DataSourceUtils;
 import com.whu.vo.Page;
@@ -15,7 +17,10 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 import java.lang.reflect.Type;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class ProductDao {
@@ -93,5 +98,27 @@ public class ProductDao {
         String sql = "select * from product where pid = ?";
         Product product = runner.query(sql, new BeanHandler<>(Product.class), pid);
         return product;
+    }
+
+    public void addOrders(Order order) throws SQLException {
+        QueryRunner runner = new QueryRunner();
+        String sql = "insert into orders values(?,?,?,?,?,?,?,?)";
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime = format.format(order.getOrderTime());
+        System.out.println(currentTime);
+        runner.update(DataSourceUtils.getConnection(), sql, order.getOid(), currentTime, order.getTotal(), order.getState(),
+                order.getAddress(), order.getName(), order.getTelephone(), order.getUser().getUid());
+
+    }
+
+    public void addOrderItem(Order order) throws SQLException {
+        QueryRunner runner = new QueryRunner();
+        String sql = "insert into orderitem values(?,?,?,?,?)";
+        Connection con = DataSourceUtils.getConnection();
+        List<OrderItem> orderItemList = order.getOrderItems();
+        for (OrderItem orderItem : orderItemList) {
+            runner.update(con, sql, orderItem.getItemId(), orderItem.getCount(), orderItem.getSubTotal(), orderItem.getProduct().getPid(),
+                    orderItem.getOrder().getOid());
+        }
     }
 }
