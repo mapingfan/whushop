@@ -11,6 +11,7 @@ import com.whu.vo.Page;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -20,8 +21,8 @@ import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class ProductDao {
     public List<Product> findHotProduct() throws SQLException {
@@ -120,5 +121,19 @@ public class ProductDao {
             runner.update(con, sql, orderItem.getItemId(), orderItem.getCount(), orderItem.getSubTotal(), orderItem.getProduct().getPid(),
                     orderItem.getOrder().getOid());
         }
+    }
+
+    public List<Order> findAllOrders(String uid) throws SQLException {
+        QueryRunner runner = new QueryRunner(DataSourceUtils.getDataSource());
+        String sql = "select * from orders where uid = ?";
+        List<Order> orderList = runner.query(sql, new BeanListHandler<>(Order.class), uid);
+        return orderList;
+    }
+
+    public List<Map<String, Object>> findAllOrderItemByOid(String oid) throws SQLException {
+        QueryRunner runner = new QueryRunner(DataSourceUtils.getDataSource());
+        String sql = "select * from orderitem i, product p where i.pid = p.pid and i.oid = ?";
+        List<Map<String, Object>> mapList = runner.query(sql, new MapListHandler(), oid);
+        return mapList;
     }
 }

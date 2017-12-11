@@ -9,6 +9,7 @@ import com.whu.vo.Page;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 public class ProductService {
     public List<Product> findHotProduct() throws SQLException {
@@ -68,6 +69,21 @@ public class ProductService {
             }
 
         }
+
+    }
+
+    public List<Order> findAllOrders(String uid) throws SQLException {
+        List<Order> orderList = null;
+        ProductDao dao = new ProductDao();
+        orderList = dao.findAllOrders(uid);
+        return orderList;
+    }
+
+    public List<Map<String, Object>> findAllOrderItemByOid(String oid) throws SQLException {
+        ProductDao dao = new ProductDao();
+        List<Map<String, Object>> mapList;
+        mapList = dao.findAllOrderItemByOid(oid);
+        return mapList;
 
     }
 }
